@@ -29,4 +29,7 @@ public class JobOfferDto {
 
     @NotNull
     JobState state;
+
+    @NotNull
+    String email;
 }
