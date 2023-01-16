@@ -1,9 +1,11 @@
 package com.veinsmoke.myrhbackend.controller;
 
 
+import com.veinsmoke.myrhbackend.entity.Company;
 import com.veinsmoke.myrhbackend.entity.JobOffer;
 import com.veinsmoke.myrhbackend.mapstruct.dtos.JobOfferDto;
 import com.veinsmoke.myrhbackend.mapstruct.mappers.JobOfferMapper;
+import com.veinsmoke.myrhbackend.service.company.CompanyService;
 import com.veinsmoke.myrhbackend.service.joboffer.JobOfferService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +26,21 @@ public class JobOfferController {
 
     private final JobOfferService jobOfferService;
     private final JobOfferMapper jobOfferMapper;
+    private final CompanyService companyService;
 
     @PostMapping("/add")
     public ResponseEntity<HashMap<String, String>> createJobOffer(@Valid @RequestBody JobOfferDto jobOfferDto) {
-        log.info(" job offer dto {}", jobOfferDto);
+        // throw exception if company not found
+        Company company = companyService.getCompanyByEmail(jobOfferDto.getEmail()).orElseThrow(() -> new RuntimeException("Company not found"));
+
+        // map dto to entity
         JobOffer jobOffer = jobOfferMapper.jobOfferDtoToJobOffer(jobOfferDto);
-        log.info(" job offer {}", jobOffer);
+        jobOffer.setCompany(company);
+
+        // save job offer
         jobOfferService.create(jobOffer);
+
+        // return response
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Job offer created");
         return ResponseEntity.ok(response);
