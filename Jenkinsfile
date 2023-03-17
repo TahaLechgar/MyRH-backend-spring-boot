@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Build') {
             agent {
-                docker {image 'maven:3-openjdk-8-slim'}
+                docker {image 'maven:3-openjdk-17'}
             }
             steps {
                 sh 'mvn clean'
