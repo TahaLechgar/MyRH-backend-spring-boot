@@ -5,7 +5,10 @@ pipeline {
     stages {
         stage('Build') {
             agent {
-                docker {image 'maven:3-openjdk-17'}
+                docker {
+                    image 'maven:3-openjdk-17'
+                    reuseNode true
+                }
             }
             steps {
                 sh 'mvn clean'
