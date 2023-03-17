@@ -1,15 +1,12 @@
 pipeline {
-
-    agent {
-           docker {
-                image 'maven:3-openjdk-17'
-                args '-v $HOME/.m2:/root/.m2'
-            }
-            
-    }
+    
+    agent any
 
     stages {
         stage('Build') {
+            agent {
+                docker {image 'maven:3-openjdk-8-slim'}
+            }
             steps {
                 sh 'mvn clean'
                 sh 'mvn compile'
